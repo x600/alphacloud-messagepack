@@ -1,16 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+		<AssemblyVersion>5.0.25333.2</AssemblyVersion>
+		<PackageVersion>$(AssemblyVersion)</PackageVersion>
+		<RepositoryUrl>https://github.com/x600/alphacloud-messagepack</RepositoryUrl>
+		<NuGetSourceRelease>https://nuget.pkg.github.com/x600/index.json</NuGetSourceRelease>
+	</PropertyGroup>
 
-  <PropertyGroup Label="Package">
+	<Target Name="PostBuildRelease" AfterTargets="Pack" Condition="'$(NuGetSourceRelease)' != '' And '$(Configuration)' == 'Release'">
+		<Exec Command="echo $(NuGetPath)nuget.exe push &quot;$(MSBuildProjectDirectory)\bin\$(Configuration)\$(MSBuildProjectName).$(PackageVersion).nupkg&quot; $(NugetPublishPassword) -Source &quot;$(NuGetSourceRelease)&quot; -Verbosity Detailed" />
+	</Target>
+
+	<PropertyGroup Label="Package">
     <PackageTags>messagepack msgpack webapi formatter serialization webapi-client alphacloud</PackageTags>
     <Description>MessagePack formatters for WebApi client (Microsoft.AspNet.WebApi.Client).</Description>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Include="..\..\common\AssemblyVersion.cs" Link="AssemblyVersion.cs" />
-  </ItemGroup>
 
   <ItemGroup Label="Package References">
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="[6.0.0, 7.0.0)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="JetBrains.Annotations" Version="2025.2.4" />
+    <PackageReference Update="MessagePack" Version="3.1.4" />
   </ItemGroup>
 
 </Project>
